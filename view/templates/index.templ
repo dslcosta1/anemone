@@ -1,0 +1,102 @@
+package templates
+
+templ Index() {
+	<html>
+		<head>
+			<title>Classifier</title>
+			<meta charset="UTF-8" />
+			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+			<script>
+				async function classify(event) {
+					event.preventDefault();
+
+					const name = document.getElementById("name").value;
+					const language = document.getElementById("language").value;
+					const country = document.getElementById("country").value;
+					const resultBox = document.getElementById("result");
+
+					resultBox.innerText = "Classifying...";
+
+					try {
+						const response = await fetch("http://localhost:8080/v1/classify", {
+							method: "POST",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify({ name, language, country }),
+						});
+
+						if (!response.ok) {
+							throw new Error("Backend error: " + response.status);
+						}
+
+						const data = await response.json();
+
+						// ✅ show only the result field
+						if (data.result) {
+							resultBox.innerText = data.result;
+						} else {
+							resultBox.innerText = "Unexpected response: " + JSON.stringify(data);
+						}
+					} catch (err) {
+						console.error(err);
+						resultBox.innerText = "Error: " + err.message;
+					}
+				}
+			</script>
+
+			<style>
+				body {
+					font-family: sans-serif;
+					margin: 2rem;
+					background-color: #f9f9f9;
+				}
+				form {
+					display: flex;
+					flex-direction: column;
+					gap: 0.5rem;
+					max-width: 300px;
+				}
+				input, select, button {
+					padding: 0.5rem;
+					border: 1px solid #ccc;
+					border-radius: 8px;
+				}
+				#result {
+					margin-top: 1rem;
+					padding: 0.75rem;
+					background: white;
+					border: 1px solid #ddd;
+					border-radius: 8px;
+					box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+					min-height: 2rem;
+				}
+			</style>
+		</head>
+
+		<body>
+			<h1>ANEMONE: Name Classifier</h1>
+			<form onsubmit="classify(event)">
+				<label for="name">Name</label>
+				<input id="name" name="name" type="text" required />
+
+				<label for="language">Language</label>
+				<select id="language">
+					<option value="pt-br">Portuguese</option>
+					<option value="en">English</option>
+					<option value="es">Spanish</option>
+				</select>
+
+				<label for="country">Country</label>
+				<select id="country">
+					<option value="br">Brazil</option>
+					<option value="us">USA</option>
+					<option value="es">Spain</option>
+				</select>
+
+				<button type="submit">Classify</button>
+			</form>
+
+			<h3>Result</h3>
+			<div id="result">(No result yet)</div>
+		</body>
+	</html>
+}

@@ -1,7 +1,10 @@
 package main
 
-import "net/http"
-
+import (
+	"net/http"
+	
+	"github.com/dslcosta1/anemone/cmd/controler"
+)
 
 type CreateClassifyPayload struct {
 	Name   string  	  `json:"name" validate:"required,max=100"`
@@ -20,9 +23,9 @@ func (app *application) classifyHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	payload.Name = "test"
 	// Call LLM model to get the classification
-	var response = ResponseClassify{"valid"}
+	result := controler.ClassifyName(payload.Name, payload.Language, payload.Country)
+	var response = ResponseClassify{result}
 
 
 	if err := writeJSON(w, http.StatusCreated, response); err != nil {

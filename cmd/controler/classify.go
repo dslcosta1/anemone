@@ -1,6 +1,9 @@
 package controler
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/dslcosta1/anemone/cmd/gateway"
+)
 
 
 var classifications = map[string]string{
@@ -20,6 +23,10 @@ var classifications = map[string]string{
 
 func ClassifyName(name string, language string, country string) string {
 	fmt.Println(name)
+
+	prompt := "Explain how AI works in a few words"
+	gateway.GetGenAIOutput(prompt)
+
 	val, ok := classifications[name]
 	if !ok {
 		return "Inconclusive"	

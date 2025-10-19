@@ -12,8 +12,9 @@ type CreateClassifyPayload struct {
 	Country  string	  `json:"country" validate:"required,max=100"`
 }
 
+// ResponseClassify now wraps the full structured result
 type ResponseClassify struct {
-	Result string `json:"result" validate:"required,max=100"`
+	Result controler.ClassificationResult `json:"result"`
 }
 
 func (app *application) classifyHandler(w http.ResponseWriter, r *http.Request) {
@@ -23,12 +24,14 @@ func (app *application) classifyHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	// Call LLM model to get the classification
+	// Call LLM model to get the structured classification
 	result := controler.ClassifyName(payload.Name, payload.Language, payload.Country)
-	var response = ResponseClassify{result}
 
+	response := ResponseClassify{
+		Result: result,
+	}
 
-	if err := writeJSON(w, http.StatusCreated, response); err != nil {
+	if err := writeJSON(w, http.StatusOK, response); err != nil {
 		writeJSONError(w, http.StatusInternalServerError, err.Error())
 		return
 	}

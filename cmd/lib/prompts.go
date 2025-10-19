@@ -15,10 +15,12 @@ func BuildClassificationPrompt(name, language, countryISO2 string) string {
 	promptBuilder := strings.Builder{}
 	promptBuilder.WriteString(fmt.Sprintf(
 		"You are a name classifier. Your task is to classify a given name according to the following categories:\n\n"+
-			"- valid: a normal, human personal name\n"+
-			"- invalid: a common noun, object, color, or word that is not a name\n"+
-			"- offensive: a name or phrase that contains insults, sexual, or offensive words\n"+
-			"- irracional: a sequence of random or meaningless characters\n\n"+
+			"- valid: a normal, human personal name\n" +
+			"- non_name: a common noun, object, color, or other word that is not a person’s name\n" +
+			"- offensive: a word or phrase that contains insults, sexual, or explicit meaning\n" +
+			"- irrational: a random or meaningless sequence of characters\n" +
+			"- misspelled: a name with spelling or grammatical errors, such as missing accents or repeated letters\n" +
+			"- humorous: a name or phrase that forms a joke, pun, or double meaning\n\n"+
 			"Language: %s\n"+
 			"Country: %s\n\n"+
 			"Here are examples from this country:\n\n",
@@ -32,7 +34,7 @@ func BuildClassificationPrompt(name, language, countryISO2 string) string {
 
 	promptBuilder.WriteString(fmt.Sprintf(
 		"\nNow classify the following name:\n\n%q\n\n"+
-			"Return only one word from these options: Valid, Invalid, Offensive, or Irracional.\n"+
+			"Return only one word from these options: valid, non_name, offensive, irracional, misspelled or humorous\n"+
 			"No explanations, no punctuation — only the category name.", name))
 
 	return promptBuilder.String()
@@ -44,7 +46,7 @@ func BuildClassificationPrompt(name, language, countryISO2 string) string {
 func NormalizeClassificationOutput(output string) string {
 	output = strings.ToLower(strings.TrimSpace(output))
 
-	categories := []string{"valid", "invalid", "offensive", "irracional"}
+	categories := []string{"valid", "non_name", "offensive", "irracional", "misspelled", "humorous"}
 
 	// If the output is exactly one of the categories, return it immediately
 	for _, cat := range categories {
@@ -70,29 +72,78 @@ func getExamplesByCountry(countryISO2 string) map[string]string {
 	switch strings.ToUpper(countryISO2) {
 	case "BR":
 		return map[string]string{
-			"Daniel Silva":  "valid",
-			"Fátima":        "valid",
-			"Giovana":       "valid",
-			"André":         "valid",
-			"Lixão":         "offensive",
-			"Maconheiro":    "offensive",
-			"Andreia Puta":  "offensive",
-			"kfrjsgbjrbhjr": "irracional",
-			"erj4ri4uiujs":  "irracional",
-			"akeg":          "irracional",
-			"Maçã":          "invalid",
-			"Azul":          "invalid",
+		// ✅ Valid (proper names)
+		"Daniel Silva":  "valid",
+		"Fátima":        "valid",
+		"Giovana":       "valid",
+		"André":         "valid",
+		"João Pedro":    "valid",
+		"Maria Clara":   "valid",
+
+		// 🚫 NonName (replaces "invalid")
+		"Maçã":          "nonname",
+		"Azul":          "nonname",
+		"Carro":         "nonname",
+		"Pedra":         "nonname",
+		"Rio":           "nonname",
+		"Montanha":      "nonname",
+
+		// 💢 Offensive
+		"Lixão":         "offensive",
+		"Maconheiro":    "offensive",
+		"Andreia Puta":  "offensive",
+		"Filho da Mãe":  "offensive",
+		"Otário":        "offensive",
+
+		// 🔣 Irracional (random/gibberish)
+		"kfrjsgbjrbhjr": "irracional",
+		"erj4ri4uiujs":  "irracional",
+		"akeg":          "irracional",
+		"zxqpt":         "irracional",
+		"lljdska":       "irracional",
+
+		// ✏️ Misspelled / GrammarError
+		"Jooao":         "misspelled",
+		"Andree":        "misspelled",
+		"maria silvva":  "misspelled",
+		"lUcas":         "misspelled",
+		"Anadrea":       "misspelled",
+
+		// 😄 Humorous / Double meaning
+		"Paula Tejano":  "humorous",
+		"Oscar Alho":    "humorous",
+		"Tereza Meia":   "humorous",
+		"Jacinto Leito": "humorous",
+		"Armando Pinto": "humorous",
 		}
 	default:
 		// Fallback minimal examples in English
 		return map[string]string{
-			"John":       "valid",
-			"Alice":      "valid",
-			"Apple":      "invalid",
-			"Blue":       "invalid",
-			"Idiot":      "offensive",
-			"asdkjhasd":  "irracional",
-			"qwe123":     "irracional",
+		// Valid
+		"John":       "valid",
+		"Alice":      "valid",
+		"Michael":    "valid",
+
+		// NonName
+		"Apple":      "nonname",
+		"Blue":       "nonname",
+		"Car":        "nonname",
+
+		// Offensive
+		"Idiot":      "offensive",
+		"Dumbass":    "offensive",
+
+		// Irrational
+		"asdkjhasd":  "irracional",
+		"qwe123":     "irracional",
+
+		// Misspelled
+		"Jhon":       "misspelled",
+		"Alyce":      "misspelled",
+
+		// Humorous
+		"Ben Dover":  "humorous",
+		"Phil McCracken": "humorous",
 		}
 	}
 }

@@ -15,7 +15,7 @@ templ Index() {
 					const country = document.getElementById("country").value;
 					const resultBox = document.getElementById("result");
 
-					resultBox.innerText = "Classifying...";
+					resultBox.innerHTML = "<em>Classifying...</em>";
 
 					try {
 						const response = await fetch("http://localhost:8080/v1/classify", {
@@ -30,8 +30,8 @@ templ Index() {
 
 						const data = await response.json();
 
-						if (data.result) {
-							resultBox.innerText = data.result;
+						if (data.result && data.result.features) {
+							renderFeatures(data.result, resultBox);
 						} else {
 							resultBox.innerText = "Unexpected response: " + JSON.stringify(data);
 						}
@@ -39,6 +39,34 @@ templ Index() {
 						console.error(err);
 						resultBox.innerText = "Error: " + err.message;
 					}
+				}
+
+				function renderFeatures(result, container) {
+					container.innerHTML = `
+						<h3>Result for<br><strong>Name: ${result.name}</strong><br><strong>Language: ${result.language}</strong><br><strong>Country: ${result.country}</strong></h3>
+						<div class="features"></div>
+					`;
+
+					const featuresDiv = container.querySelector(".features");
+					result.features.forEach(f => {
+						const color = getBarColor(f.score);
+						const bar = document.createElement("div");
+						bar.classList.add("feature-bar");
+						bar.innerHTML = `
+							<div class="label">${f.category} (${f.score}%)</div>
+							<div class="bar-container">
+								<div class="bar-fill" style="width: ${f.score}%; background-color: ${color};"></div>
+							</div>
+						`;
+						featuresDiv.appendChild(bar);
+					});
+				}
+
+				function getBarColor(score) {
+					// Gradient from red (0) → yellow (50) → green (100)
+					const r = score < 50 ? 255 : Math.round(255 - (score - 50) * 5.1);
+					const g = score > 50 ? 255 : Math.round(score * 5.1);
+					return `rgb(${r}, ${g}, 100)`;
 				}
 			</script>
 
@@ -48,7 +76,7 @@ templ Index() {
 					background: #f6f8fa;
 					margin: 0;
 					display: flex;
-					justify-content: center; /* horizontal centering */
+					justify-content: center;
 				}
 
 				.container {
@@ -56,7 +84,7 @@ templ Index() {
 					padding: 2rem 2.5rem;
 					border-radius: 10px;
 					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-					max-width: 400px;
+					max-width: 420px;
 					width: 100%;
 					text-align: center;
 					margin-top: 50px;
@@ -98,11 +126,33 @@ templ Index() {
 
 				#result {
 					margin-top: 1.5rem;
-					font-weight: bold;
-					background: #f0f0f0;
-					padding: 10px;
+					text-align: left;
+					background: #f9f9f9;
+					padding: 12px;
 					border-radius: 6px;
-					min-height: 1.5em;
+					min-height: 2em;
+				}
+
+				.feature-bar {
+					margin: 10px 0;
+				}
+
+				.label {
+					font-size: 0.9rem;
+					margin-bottom: 4px;
+				}
+
+				.bar-container {
+					background: #ddd;
+					border-radius: 6px;
+					height: 16px;
+					width: 100%;
+					overflow: hidden;
+				}
+
+				.bar-fill {
+					height: 100%;
+					transition: width 0.6s ease, background-color 0.6s ease;
 				}
 			</style>
 		</head>
@@ -116,9 +166,9 @@ templ Index() {
 
 					<label for="language">Language</label>
 					<select id="language">
-						<option value="pt-br">Portuguese</option>
-						<option value="en">English</option>
-						<option value="es">Spanish</option>
+						<option value="portuguese">Portuguese</option>
+						<option value="english">English</option>
+						<option value="spanish">Spanish</option>
 					</select>
 
 					<label for="country">Country</label>

@@ -32,7 +32,7 @@ func ClassifyName(nameInput string, languageInput string, countryInput string) C
 	rawResponse := gateway.GetGenAIOutput(prompt)
 	classification := lib.NormalizeClassificationOutput(rawResponse)
 
-	categories := []string{"valid", "invalid", "offensive", "irracional"}
+	categories := []string{"valid", "non_name", "offensive", "irracional", "misspelled", "humorous"}
 	features := make([]ClassificationFeature, 0, len(categories))
 
 	// Assign 100 to the predicted category, 0 to others

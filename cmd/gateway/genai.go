@@ -7,7 +7,7 @@ import (
     "google.golang.org/genai"
 )
 
-func GetGenAIOutput(prompt string) {
+func GetGenAIOutput(prompt string) string {
 	    ctx := context.Background()
     // The client gets the API key from the environment variable `GEMINI_API_KEY`.
     client, err := genai.NewClient(ctx, nil)
@@ -25,4 +25,5 @@ func GetGenAIOutput(prompt string) {
         log.Fatal(err)
     }
     fmt.Println(result.Text())
+	return result.Text()
 }

@@ -18,7 +18,6 @@ templ Index() {
 					resultBox.innerHTML = "<em>Classifying...</em>";
 
 					try {
-						// const response = await fetch("http://localhost:8080/v1/classify", {
 						const response = await fetch("/v1/classify", {
 							method: "POST",
 							headers: { "Content-Type": "application/json" },

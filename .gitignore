@@ -34,3 +34,4 @@ go.work.sum
 
 # Remove bin files
 bin/*
+view/*

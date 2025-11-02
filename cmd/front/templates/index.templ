@@ -1,0 +1,188 @@
+package templates
+
+templ Index() {
+	<html>
+		<head>
+			<title>Classifier</title>
+			<meta charset="UTF-8" />
+			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+			<script>
+				async function classify(event) {
+					event.preventDefault();
+
+					const name = document.getElementById("name").value;
+					const language = document.getElementById("language").value;
+					const country = document.getElementById("country").value;
+					const resultBox = document.getElementById("result");
+
+					resultBox.innerHTML = "<em>Classifying...</em>";
+
+					try {
+						const response = await fetch("/v1/classify", {
+							method: "POST",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify({ name, language, country }),
+						});
+
+						if (!response.ok) {
+							throw new Error("Backend error: " + response.status);
+						}
+
+						const data = await response.json();
+
+						if (data.result && data.result.features) {
+							renderFeatures(data.result, resultBox);
+						} else {
+							resultBox.innerText = "Unexpected response: " + JSON.stringify(data);
+						}
+					} catch (err) {
+						console.error(err);
+						resultBox.innerText = "Error: " + err.message;
+					}
+				}
+
+				function renderFeatures(result, container) {
+					container.innerHTML = `
+						<h3>Result for<br><strong>Name: ${result.name}</strong><br><strong>Language: ${result.language}</strong><br><strong>Country: ${result.country}</strong></h3>
+						<div class="features"></div>
+					`;
+
+					const featuresDiv = container.querySelector(".features");
+					result.features.forEach(f => {
+						const color = getBarColor(f.score);
+						const bar = document.createElement("div");
+						bar.classList.add("feature-bar");
+						bar.innerHTML = `
+							<div class="label">${f.category} (${f.score}%)</div>
+							<div class="bar-container">
+								<div class="bar-fill" style="width: ${f.score}%; background-color: ${color};"></div>
+							</div>
+						`;
+						featuresDiv.appendChild(bar);
+					});
+				}
+
+				function getBarColor(score) {
+					// Gradient from red (0) → yellow (50) → green (100)
+					const r = score < 50 ? 255 : Math.round(255 - (score - 50) * 5.1);
+					const g = score > 50 ? 255 : Math.round(score * 5.1);
+					return `rgb(${r}, ${g}, 100)`;
+				}
+			</script>
+
+			<style>
+				body {
+					font-family: sans-serif;
+					background: #f6f8fa;
+					margin: 0;
+					display: flex;
+					justify-content: center;
+				}
+
+				.container {
+					background: white;
+					padding: 2rem 2.5rem;
+					border-radius: 10px;
+					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+					max-width: 420px;
+					width: 100%;
+					text-align: center;
+					margin-top: 50px;
+				}
+
+				h1 {
+					margin-bottom: 1.5rem;
+					font-size: 1.5rem;
+				}
+
+				form label {
+					display: block;
+					margin-top: 10px;
+					margin-bottom: 4px;
+					text-align: left;
+				}
+
+				input, select, button {
+					width: 100%;
+					max-width: 250px;
+					padding: 10px;
+					margin: 4px auto;
+					border: 1px solid #ccc;
+					border-radius: 6px;
+					display: block;
+				}
+
+				button {
+					background: #007bff;
+					color: white;
+					cursor: pointer;
+					font-weight: bold;
+					margin-top: 12px;
+				}
+
+				button:hover {
+					background: #0056b3;
+				}
+
+				#result {
+					margin-top: 1.5rem;
+					text-align: left;
+					background: #f9f9f9;
+					padding: 12px;
+					border-radius: 6px;
+					min-height: 2em;
+				}
+
+				.feature-bar {
+					margin: 10px 0;
+				}
+
+				.label {
+					font-size: 0.9rem;
+					margin-bottom: 4px;
+				}
+
+				.bar-container {
+					background: #ddd;
+					border-radius: 6px;
+					height: 16px;
+					width: 100%;
+					overflow: hidden;
+				}
+
+				.bar-fill {
+					height: 100%;
+					transition: width 0.6s ease, background-color 0.6s ease;
+				}
+			</style>
+		</head>
+
+		<body>
+			<div class="container">
+				<h1>ANEMONE: Name Classifier</h1>
+				<form onsubmit="classify(event)">
+					<label for="name">Name</label>
+					<input id="name" name="name" type="text" required />
+
+					<label for="language">Language</label>
+					<select id="language">
+						<option value="portuguese">Portuguese</option>
+						<option value="english">English</option>
+						<option value="spanish">Spanish</option>
+					</select>
+
+					<label for="country">Country</label>
+					<select id="country">
+						<option value="br">Brazil</option>
+						<option value="us">USA</option>
+						<option value="es">Spain</option>
+					</select>
+
+					<button type="submit">Classify</button>
+				</form>
+
+				<div id="result">(No result yet)</div>
+			</div>
+		</body>
+	</html>
+}

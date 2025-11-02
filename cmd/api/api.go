@@ -6,7 +6,7 @@ import (
 	"time"
 
 	// "github.com/dslcosta1/social/internal/env/store"
-	"github.com/dslcosta1/anemone/view/templates"
+	"github.com/dslcosta1/anemone/cmd/front/templates"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
@@ -54,7 +54,7 @@ func (app *application) mount() http.Handler {
 	// processing should be stopped.
 	r.Use(middleware.Timeout(60 * time.Second))
 
-		// 👇 Frontend route
+	// 👇 Frontend route
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		templates.Index().Render(r.Context(), w)
 	})
@@ -67,7 +67,7 @@ func (app *application) mount() http.Handler {
 			r.Options("/", func(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusOK)
 			})
-		}) 
+		})
 	})
 
 	return r

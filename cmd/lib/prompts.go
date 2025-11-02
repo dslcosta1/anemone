@@ -15,11 +15,11 @@ func BuildClassificationPrompt(name, language, countryISO2 string) string {
 	promptBuilder := strings.Builder{}
 	promptBuilder.WriteString(fmt.Sprintf(
 		"You are a name classifier. Your task is to classify a given name according to the following categories:\n\n"+
-			"- valid: a normal, human personal name\n" +
-			"- non_name: a common noun, object, color, or other word that is not a person’s name\n" +
-			"- offensive: a word or phrase that contains insults, sexual, or explicit meaning\n" +
-			"- irrational: a random or meaningless sequence of characters\n" +
-			"- misspelled: a name with spelling or grammatical errors, such as missing accents or repeated letters\n" +
+			"- valid: a normal, human personal name\n"+
+			"- non_name: a common noun, object, color, or other word that is not a person’s name\n"+
+			"- offensive: a word or phrase that contains insults, sexual, or explicit meaning\n"+
+			"- irrational: a random or meaningless sequence of characters\n"+
+			"- misspelled: a name with spelling or grammatical errors, such as missing accents or repeated letters\n"+
 			"- humorous: a name or phrase that forms a joke, pun, or double meaning\n\n"+
 			"Language: %s\n"+
 			"Country: %s\n\n"+
@@ -72,78 +72,78 @@ func getExamplesByCountry(countryISO2 string) map[string]string {
 	switch strings.ToUpper(countryISO2) {
 	case "BR":
 		return map[string]string{
-		// ✅ Valid (proper names)
-		"Daniel Silva":  "valid",
-		"Fátima":        "valid",
-		"Giovana":       "valid",
-		"André":         "valid",
-		"João Pedro":    "valid",
-		"Maria Clara":   "valid",
+			// ✅ Valid (proper names)
+			"daniel silva": "valid",
+			"fátima":       "valid",
+			"giovana":      "valid",
+			"andré":        "valid",
+			"joão pedro":   "valid",
+			"maria clara":  "valid",
 
-		// 🚫 NonName (replaces "invalid")
-		"Maçã":          "nonname",
-		"Azul":          "nonname",
-		"Carro":         "nonname",
-		"Pedra":         "nonname",
-		"Rio":           "nonname",
-		"Montanha":      "nonname",
+			// 🚫 NonName (replaces "invalid")
+			"maçã":     "nonname",
+			"azul":     "nonname",
+			"carro":    "nonname",
+			"pedra":    "nonname",
+			"rio":      "nonname",
+			"montanha": "nonname",
 
-		// 💢 Offensive
-		"Lixão":         "offensive",
-		"Maconheiro":    "offensive",
-		"Andreia Puta":  "offensive",
-		"Filho da Mãe":  "offensive",
-		"Otário":        "offensive",
+			// 💢 Offensive
+			"lixão":        "offensive",
+			"maconheiro":   "offensive",
+			"andreia puta": "offensive",
+			"filho da mãe": "offensive",
+			"otário":       "offensive",
 
-		// 🔣 Irracional (random/gibberish)
-		"kfrjsgbjrbhjr": "irracional",
-		"erj4ri4uiujs":  "irracional",
-		"akeg":          "irracional",
-		"zxqpt":         "irracional",
-		"lljdska":       "irracional",
+			// 🔣 Irracional (random/gibberish)
+			"kfrjsgbjrbhjr": "irracional",
+			"erj4ri4uiujs":  "irracional",
+			"akeg":          "irracional",
+			"zxqpt":         "irracional",
+			"lljdska":       "irracional",
 
-		// ✏️ Misspelled / GrammarError
-		"Jooao":         "misspelled",
-		"Andree":        "misspelled",
-		"maria silvva":  "misspelled",
-		"lUcas":         "misspelled",
-		"Anadrea":       "misspelled",
+			// ✏️ Misspelled / GrammarError
+			"jooao":        "misspelled",
+			"andree":       "misspelled",
+			"maria silvva": "misspelled",
+			"anadrea":      "misspelled",
+			"arhtur":       "misspelled",
 
-		// 😄 Humorous / Double meaning
-		"Paula Tejano":  "humorous",
-		"Oscar Alho":    "humorous",
-		"Tereza Meia":   "humorous",
-		"Jacinto Leito": "humorous",
-		"Armando Pinto": "humorous",
+			// 😄 Humorous / Double meaning
+			"paula tejano":  "humorous",
+			"oscar alho":    "humorous",
+			"tereza meia":   "humorous",
+			"jacinto leito": "humorous",
+			"armando pinto": "humorous",
 		}
 	default:
 		// Fallback minimal examples in English
 		return map[string]string{
-		// Valid
-		"John":       "valid",
-		"Alice":      "valid",
-		"Michael":    "valid",
+			// Valid
+			"john":    "valid",
+			"alice":   "valid",
+			"michael": "valid",
 
-		// NonName
-		"Apple":      "nonname",
-		"Blue":       "nonname",
-		"Car":        "nonname",
+			// NonName
+			"apple": "nonname",
+			"blue":  "nonname",
+			"car":   "nonname",
 
-		// Offensive
-		"Idiot":      "offensive",
-		"Dumbass":    "offensive",
+			// Offensive
+			"idiot":   "offensive",
+			"dumbass": "offensive",
 
-		// Irrational
-		"asdkjhasd":  "irracional",
-		"qwe123":     "irracional",
+			// Irrational
+			"asdkjhasd": "irracional",
+			"qwe123":    "irracional",
 
-		// Misspelled
-		"Jhon":       "misspelled",
-		"Alyce":      "misspelled",
+			// Misspelled
+			"jhon":  "misspelled",
+			"alyce": "misspelled",
 
-		// Humorous
-		"Ben Dover":  "humorous",
-		"Phil McCracken": "humorous",
+			// Humorous
+			"ben dover":      "humorous",
+			"phil mccracken": "humorous",
 		}
 	}
 }

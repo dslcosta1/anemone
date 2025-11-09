@@ -1,285 +1,162 @@
 package templates
 
-templ Index() {
-	<html lang="en">
+templ Home() {
+	<html>
 		<head>
-			<title>Anemone - Playground</title>
+			<title>Anemone — Smart Name Classifier</title>
 			<meta charset="UTF-8" />
 			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-			<!-- Inter font -->
-			<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-			<script>
-				async function classify(event) {
-					event.preventDefault();
-
-					const name = document.getElementById("name").value;
-					const language = document.getElementById("language").value;
-					const country = document.getElementById("country").value;
-					const resultBox = document.getElementById("result");
-
-					resultBox.innerHTML = "<em>Classifying...</em>";
-
-					try {
-						const response = await fetch("/v1/classify", {
-							method: "POST",
-							headers: { "Content-Type": "application/json" },
-							body: JSON.stringify({ name, language, country }),
-						});
-
-						if (!response.ok) {
-							throw new Error("Backend error: " + response.status);
-						}
-
-						const data = await response.json();
-
-						if (data.result && data.result.features) {
-							renderFeatures(data.result, resultBox);
-						} else {
-							resultBox.innerText = "Unexpected response: " + JSON.stringify(data);
-						}
-					} catch (err) {
-						console.error(err);
-						resultBox.innerText = "Error: " + err.message;
-					}
-				}
-
-				function renderFeatures(result, container) {
-					container.innerHTML = `
-						<h3>Result for<br>
-							<strong>Name: ${result.name}</strong><br>
-							<strong>Language: ${result.language}</strong><br>
-							<strong>Country: ${result.country}</strong>
-						</h3>
-						<div class="features"></div>
-					`;
-
-					const featuresDiv = container.querySelector(".features");
-					result.features.forEach(f => {
-						const color = getBarColor(f.score);
-						const bar = document.createElement("div");
-						bar.classList.add("feature-bar");
-						bar.innerHTML = `
-							<div class="label">${f.category} (${f.score}%)</div>
-							<div class="bar-container">
-								<div class="bar-fill" style="width: ${f.score}%; background-color: ${color};"></div>
-							</div>
-						`;
-						featuresDiv.appendChild(bar);
-					});
-				}
-
-				function getBarColor(score) {
-					const r = score < 50 ? 250 : Math.round(250 - (score - 50) * 3.6);
-					const g = score > 50 ? 204 : Math.round(score * 2);
-					const b = 196;
-					return `rgb(${r}, ${g}, ${b})`;
-				}
-			</script>
+			<link rel="preconnect" href="https://fonts.googleapis.com" />
+			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+			<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
 			<style>
-				:root {
-					--primary: #2cccc4;
-					--primary-dark: #0a2e50;
-					--secondary: #315f8e;
-					--accent: #fa7265;
-					--background: #f6f8fa;
-					--purple: #8645a5;
-					--blue-light: #4a8eac;
-					--radius: 10px;
-				}
-
 				body {
 					font-family: 'Inter', sans-serif;
-					background: var(--background);
 					margin: 0;
-					display: flex;
-					flex-direction: column;
-					align-items: center;
-					min-height: 100vh;
+					background: #f6f8fa;
+					color: #0a2e50;
 				}
 
-				/* Header */
 				header {
-					width: 100%;
-					background: #ffffff;
-					box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 					display: flex;
-					align-items: center;
 					justify-content: space-between;
+					align-items: center;
+					background-color: white;
 					padding: 0.75rem 2rem;
+					box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 					position: sticky;
 					top: 0;
-					z-index: 100;
+					z-index: 1000;
+					max-width: 1200px;
+					margin: 0 auto;
 				}
 
-				.header-left {
-					display: flex;
-					align-items: center;
-					gap: 1rem;
-					margin-left: 15px
+				header img {
+					height: 40px;
+					margin-right: 10px;
 				}
 
-				.header-left img {
-					height: 36px;
-					width: auto;
-				}
-
-				.header-left .brand {
-					color: var(--primary-dark);
-					font-weight: 700;
-					font-size: 1.1rem;
-					letter-spacing: -0.02em;
-				}
-
-				.nav-links {
-					display: flex;
-					gap: 0.5rem;
-					margin-left: 0.5rem;
+				.brand {
+					font-weight: bold;
+					font-size: 1.25rem;
+					color: #0a2e50;
+					margin-right: 1.5rem;
 				}
 
 				.nav-links a {
+					margin-right: 1rem;
 					text-decoration: none;
+					color: #315f8e;
 					font-weight: 500;
-					color: var(--secondary);
-					transition: color 0.2s, border-bottom 0.2s;
-					padding-bottom: 3px;
-					border-bottom: 2px solid transparent;
+					transition: color 0.2s;
 				}
 
 				.nav-links a:hover {
-					color: var(--primary-dark);
-					border-bottom: 2px solid var(--primary);
+					color: #2cccc4;
 				}
 
 				.nav-links a.active {
-					color: var(--primary);
-					border-bottom: 2px solid var(--primary);
-				}
-
-				.header-right {
-					margin-left: auto;
-					margin-right: 15px
+					color: #fa7265;
+					font-weight: 600;
 				}
 
 				.header-right button {
-					background: var(--primary);
+					background-color: #8645a5;
 					color: white;
 					border: none;
-					padding: 10px 18px;
+					padding: 0.5rem 1.25rem;
 					border-radius: 6px;
 					cursor: pointer;
 					font-weight: 600;
-					transition: background 0.2s, transform 0.1s;
+					transition: background-color 0.2s;
 				}
 
 				.header-right button:hover {
-					background: var(--blue-light);
-					transform: translateY(-1px);
+					background-color: #4a8eac;
 				}
 
 				main {
-					display: flex;
-					justify-content: center;
-					width: 100%;
-					padding: 2rem 0;
-				}
-
-				.container {
-					background: white;
-					padding: 2.5rem 2.5rem;
-					border-radius: var(--radius);
-					box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-					max-width: 460px;
-					width: 100%;
+					max-width: 900px;
+					margin: 3rem auto;
+					padding: 0 2rem;
 					text-align: center;
 				}
 
 				h1 {
-					color: var(--primary-dark);
-					margin-bottom: 1.5rem;
-					font-size: 1.7rem;
-					font-weight: 700;
+					font-size: 2.2rem;
+					color: #0a2e50;
 				}
 
-				form label {
-					display: block;
-					margin-top: 14px;
-					margin-bottom: 4px;
-					text-align: left;
-					color: var(--secondary);
-					font-weight: 500;
-					font-size: 0.95rem;
+				p.lead {
+					font-size: 1.1rem;
+					color: #315f8e;
+					max-width: 700px;
+					margin: 1rem auto 2rem;
 				}
 
-				input, select {
-					width: 100%;
-					padding: 10px 12px;
-					margin: 4px 0;
-					border: 1px solid #d4d4d4;
-					border-radius: 6px;
-					font-size: 1rem;
-					font-family: inherit;
-					transition: border-color 0.2s;
+				section {
+					margin-top: 4rem;
+					text-align: center;
 				}
 
-				input:focus, select:focus {
-					border-color: var(--primary);
-					outline: none;
-					box-shadow: 0 0 0 2px rgba(44, 204, 196, 0.15);
+				section h2 {
+					font-size: 1.6rem;
+					color: #0a2e50;
+					margin-bottom: 1rem;
 				}
 
-				button.submit {
-					background: var(--primary);
+				.features {
+					display: grid;
+					grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+					gap: 1.5rem;
+					margin-top: 2rem;
+				}
+
+				.feature-card {
+					background: white;
+					padding: 1.5rem;
+					border-radius: 10px;
+					box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+					color: #315f8e;
+					transition: transform 0.2s, box-shadow 0.2s;
+				}
+
+				.feature-card:hover {
+					transform: translateY(-3px);
+					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+				}
+
+				.cta-button {
+					display: inline-block;
+					background-color: #2cccc4;
 					color: white;
-					border: none;
-					padding: 12px;
+					padding: 0.75rem 1.5rem;
 					border-radius: 6px;
-					cursor: pointer;
 					font-weight: 600;
-					width: 100%;
-					margin-top: 18px;
-					font-size: 1rem;
-					transition: background 0.2s, transform 0.1s;
+					text-decoration: none;
+					margin-top: 1.5rem;
+					transition: background-color 0.2s;
 				}
 
-				button.submit:hover {
-					background: var(--blue-light);
-					transform: translateY(-1px);
+				.cta-button:hover {
+					background-color: #4a8eac;
 				}
 
-				#result {
-					margin-top: 1.8rem;
-					text-align: left;
-					background: #f9f9f9;
-					padding: 1rem;
-					border-radius: 8px;
-					min-height: 2em;
-					color: var(--primary-dark);
+				.advantages {
+					background: white;
+					padding: 3rem 2rem;
+					border-radius: 12px;
+					margin-top: 3rem;
+					box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 				}
 
-				.feature-bar {
-					margin: 10px 0;
-				}
-
-				.label {
+				footer {
+					text-align: center;
+					padding: 1.5rem;
+					color: #4a8eac;
 					font-size: 0.9rem;
-					margin-bottom: 4px;
-					color: var(--secondary);
-				}
-
-				.bar-container {
-					background: #e3e7eb;
-					border-radius: 6px;
-					height: 16px;
-					width: 100%;
-					overflow: hidden;
-				}
-
-				.bar-fill {
-					height: 100%;
-					transition: width 0.6s ease, background-color 0.6s ease;
+					margin-top: 4rem;
 				}
 			</style>
 		</head>
@@ -573,44 +450,59 @@ mne02fnd8Xh7NU/qkYUtiHjoSNId2qB2gW4T9As1blEDwsuYU4MIhswC82JIqMWe6S+dtp3jU+4l
 AxLIIa70d+pRe7LXbQpvm+JrXGXZ0amWxtzVKlS+0wTPEJO6V0CtoBE9ivEBxzKjCF/ehXUHDG8B
 L7fM9K9YvS55lFRuPMr4CeqVTxMKFeWpp8zJ+dM+Ivsuaq++QwdX9XVSDiyKcZanMtcS3HZsg3Ko
 QMv+4eUffPLf8jrdm2gAAAAASUVORK5CYII=" alt="Anemone Logo" />
-					<span class="brand">Anemone</span>
+					<span class="brand">ANEMONE</span>
 					<nav class="nav-links">
-						<a href="/" class="">Home</a>
-						<a href="/playground" class="active">Playground</a>
+						<a href="/" class="active">Home</a>
+						<a href="/playground">Playground</a>
 					</nav>
 				</div>
 				<div class="header-right">
-					<button onclick="window.location.href='/contact'">Contact</button>
+					<button onclick="window.location.href='/contact'">Talk to an expert</button>
 				</div>
 			</header>
 
 			<main>
-				<div class="container">
-					<h1>Anemone - Playground</h1>
-					<form onsubmit="classify(event)">
-						<label for="name">Name</label>
-						<input id="name" name="name" type="text" required />
+				<h1>Understand Names. Instantly.</h1>
+				<p class="lead">
+					ANEMONE is an AI-powered classifier that helps you analyze, interpret, and understand names — from linguistic origins to cultural insights.
+				</p>
 
-						<label for="language">Language</label>
-						<select id="language">
-							<option value="portuguese">Portuguese</option>
-							<option value="english">English</option>
-							<option value="spanish">Spanish</option>
-						</select>
+				<a href="/playground" class="cta-button">Try the Playground</a>
 
-						<label for="country">Country</label>
-						<select id="country">
-							<option value="br">Brazil</option>
-							<option value="us">USA</option>
-							<option value="es">Spain</option>
-						</select>
+				<section>
+					<h2>What is ANEMONE?</h2>
+					<p>
+						ANEMONE uses advanced AI models to predict characteristics, origins, and linguistic features of names. It helps businesses, researchers, and developers build smarter, more personalized systems.
+					</p>
 
-						<button class="submit" type="submit">Classify</button>
-					</form>
+					<div class="features">
+						<div class="feature-card">
+							<h3>Multilingual</h3>
+							<p>Analyze names in Portuguese, English, and Spanish with seamless precision.</p>
+						</div>
+						<div class="feature-card">
+							<h3>Data-Driven Insights</h3>
+							<p>Get meaningful statistics and AI-backed confidence scores for each prediction.</p>
+						</div>
+						<div class="feature-card">
+							<h3>Easy Integration</h3>
+							<p>Integrate ANEMONE’s API into your own applications with minimal setup.</p>
+						</div>
+					</div>
+				</section>
 
-					<div id="result">(No result yet)</div>
-				</div>
+				<section class="advantages">
+					<h2>Why choose ANEMONE?</h2>
+					<p>
+						Our platform combines speed, accuracy, and transparency to deliver results you can trust.
+					</p>
+					<a href="/contact" class="cta-button">Talk to an Expert</a>
+				</section>
 			</main>
+
+			<footer>
+				© 2025 ANEMONE — All rights reserved.
+			</footer>
 		</body>
 	</html>
 }

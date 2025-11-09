@@ -56,6 +56,12 @@ func (app *application) mount() http.Handler {
 
 	// 👇 Frontend route
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		// templates.Index().Render(r.Context(), w)
+		templates.Home().Render(r.Context(), w)
+	})
+
+	r.Get("/playground", func(w http.ResponseWriter, r *http.Request) {
+		// templates.Index().Render(r.Context(), w)
 		templates.Index().Render(r.Context(), w)
 	})
 

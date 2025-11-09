@@ -72,7 +72,7 @@ func getExamplesByCountry(countryISO2 string) map[string]string {
 	switch strings.ToUpper(countryISO2) {
 	case "BR":
 		return map[string]string{
-			// ✅ Valid (proper names)
+			// Valid (proper names)
 			"daniel silva": "valid",
 			"fátima":       "valid",
 			"giovana":      "valid",
@@ -80,7 +80,7 @@ func getExamplesByCountry(countryISO2 string) map[string]string {
 			"joão pedro":   "valid",
 			"maria clara":  "valid",
 
-			// 🚫 NonName (replaces "invalid")
+			// NonName (replaces "invalid")
 			"maçã":     "nonname",
 			"azul":     "nonname",
 			"carro":    "nonname",
@@ -88,28 +88,28 @@ func getExamplesByCountry(countryISO2 string) map[string]string {
 			"rio":      "nonname",
 			"montanha": "nonname",
 
-			// 💢 Offensive
+			// Offensive
 			"lixão":        "offensive",
 			"maconheiro":   "offensive",
 			"andreia puta": "offensive",
 			"filho da mãe": "offensive",
 			"otário":       "offensive",
 
-			// 🔣 Irracional (random/gibberish)
+			// Irracional (random/gibberish)
 			"kfrjsgbjrbhjr": "irracional",
 			"erj4ri4uiujs":  "irracional",
 			"akeg":          "irracional",
 			"zxqpt":         "irracional",
 			"lljdska":       "irracional",
 
-			// ✏️ Misspelled / GrammarError
+			// Misspelled / GrammarError
 			"jooao":        "misspelled",
 			"andree":       "misspelled",
 			"maria silvva": "misspelled",
 			"anadrea":      "misspelled",
 			"arhtur":       "misspelled",
 
-			// 😄 Humorous / Double meaning
+			// Humorous / Double meaning
 			"paula tejano":  "humorous",
 			"oscar alho":    "humorous",
 			"tereza meia":   "humorous",

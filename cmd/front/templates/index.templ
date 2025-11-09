@@ -1,11 +1,15 @@
 package templates
 
 templ Index() {
-	<html>
+	<html lang="en">
 		<head>
-			<title>Classifier</title>
+			<title>ANEMONE Classifier</title>
 			<meta charset="UTF-8" />
 			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+			<!-- Inter font -->
+			<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 			<script>
 				async function classify(event) {
 					event.preventDefault();
@@ -43,7 +47,11 @@ templ Index() {
 
 				function renderFeatures(result, container) {
 					container.innerHTML = `
-						<h3>Result for<br><strong>Name: ${result.name}</strong><br><strong>Language: ${result.language}</strong><br><strong>Country: ${result.country}</strong></h3>
+						<h3>Result for<br>
+							<strong>Name: ${result.name}</strong><br>
+							<strong>Language: ${result.language}</strong><br>
+							<strong>Country: ${result.country}</strong>
+						</h3>
 						<div class="features"></div>
 					`;
 
@@ -63,74 +71,119 @@ templ Index() {
 				}
 
 				function getBarColor(score) {
-					// Gradient from red (0) → yellow (50) → green (100)
-					const r = score < 50 ? 255 : Math.round(255 - (score - 50) * 5.1);
-					const g = score > 50 ? 255 : Math.round(score * 5.1);
-					return `rgb(${r}, ${g}, 100)`;
+					const r = score < 50 ? 250 : Math.round(250 - (score - 50) * 3.6);
+					const g = score > 50 ? 204 : Math.round(score * 2);
+					const b = 196;
+					return `rgb(${r}, ${g}, ${b})`;
 				}
 			</script>
 
 			<style>
+				:root {
+					--primary: #2cccc4;
+					--primary-dark: #0a2e50;
+					--secondary: #315f8e;
+					--accent: #fa7265;
+					--background: #f6f8fa;
+					--purple: #8645a5;
+					--blue-light: #4a8eac;
+					--radius: 10px;
+				}
+
 				body {
-					font-family: sans-serif;
-					background: #f6f8fa;
+					font-family: 'Inter', sans-serif;
+					background: var(--background);
 					margin: 0;
 					display: flex;
 					justify-content: center;
+					align-items: flex-start;
+					min-height: 100vh;
 				}
 
 				.container {
 					background: white;
-					padding: 2rem 2.5rem;
-					border-radius: 10px;
-					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-					max-width: 420px;
+					padding: 2.5rem 2.5rem;
+					border-radius: var(--radius);
+					box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+					max-width: 460px;
 					width: 100%;
 					text-align: center;
-					margin-top: 50px;
+					margin-top: 60px;
 				}
 
 				h1 {
+					color: var(--primary-dark);
 					margin-bottom: 1.5rem;
-					font-size: 1.5rem;
+					font-size: 1.7rem;
+					font-weight: 700;
+					letter-spacing: -0.02em;
 				}
 
 				form label {
 					display: block;
-					margin-top: 10px;
+					margin-top: 14px;
 					margin-bottom: 4px;
 					text-align: left;
+					color: var(--secondary);
+					font-weight: 500;
+					font-size: 0.95rem;
 				}
 
-				input, select, button {
+				input, select {
 					width: 100%;
-					max-width: 250px;
-					padding: 10px;
-					margin: 4px auto;
-					border: 1px solid #ccc;
+					padding: 10px 12px;
+					margin: 4px 0;
+					border: 1px solid #d4d4d4;
 					border-radius: 6px;
-					display: block;
+					font-size: 1rem;
+					font-family: inherit;
+					transition: border-color 0.2s;
+				}
+
+				input:focus, select:focus {
+					border-color: var(--primary);
+					outline: none;
+					box-shadow: 0 0 0 2px rgba(44, 204, 196, 0.15);
 				}
 
 				button {
-					background: #007bff;
+					background: var(--primary);
 					color: white;
+					border: none;
+					padding: 12px;
+					border-radius: 6px;
 					cursor: pointer;
-					font-weight: bold;
-					margin-top: 12px;
+					font-weight: 600;
+					width: 100%;
+					margin-top: 18px;
+					font-size: 1rem;
+					transition: background 0.2s, transform 0.1s;
 				}
 
 				button:hover {
-					background: #0056b3;
+					background: var(--blue-light);
+					transform: translateY(-1px);
+				}
+
+				button:active {
+					transform: translateY(0);
 				}
 
 				#result {
-					margin-top: 1.5rem;
+					margin-top: 1.8rem;
 					text-align: left;
 					background: #f9f9f9;
-					padding: 12px;
-					border-radius: 6px;
+					padding: 1rem;
+					border-radius: 8px;
 					min-height: 2em;
+					color: var(--primary-dark);
+				}
+
+				h3 {
+					color: var(--primary-dark);
+					margin-top: 0;
+					font-size: 1rem;
+					line-height: 1.5;
 				}
 
 				.feature-bar {
@@ -140,10 +193,11 @@ templ Index() {
 				.label {
 					font-size: 0.9rem;
 					margin-bottom: 4px;
+					color: var(--secondary);
 				}
 
 				.bar-container {
-					background: #ddd;
+					background: #e3e7eb;
 					border-radius: 6px;
 					height: 16px;
 					width: 100%;

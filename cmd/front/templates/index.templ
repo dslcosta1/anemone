@@ -94,92 +94,76 @@ templ Index() {
 					font-family: 'Inter', sans-serif;
 					background: var(--background);
 					margin: 0;
-					display: flex;
-					flex-direction: column;
-					align-items: center;
 					min-height: 100vh;
 				}
 
 				/* Header */
 				header {
-					width: 100%;
-					background: #ffffff;
-					box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 					display: flex;
-					align-items: center;
 					justify-content: space-between;
+					align-items: center;
+					background-color: white;
 					padding: 0.75rem 2rem;
+					box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 					position: sticky;
 					top: 0;
-					z-index: 100;
+					z-index: 1000;
+					max-width: 1200px;
+					margin: 0 auto;
 				}
 
-				.header-left {
-					display: flex;
-					align-items: center;
-					gap: 1rem;
-					margin-left: 15px
+				header img {
+					height: 40px;
+					margin-right: 10px;
 				}
 
-				.header-left img {
-					height: 36px;
-					width: auto;
-				}
-
-				.header-left .brand {
-					color: var(--primary-dark);
-					font-weight: 700;
-					font-size: 1.1rem;
-					letter-spacing: -0.02em;
-				}
-
-				.nav-links {
-					display: flex;
-					gap: 0.5rem;
-					margin-left: 0.5rem;
+				.brand {
+					font-weight: bold;
+					font-size: 1.25rem;
+					color: #0a2e50;
+					margin-right: 1.5rem;
 				}
 
 				.nav-links a {
+					margin-right: 1rem;
 					text-decoration: none;
+					color: #315f8e;
 					font-weight: 500;
-					color: var(--secondary);
-					transition: color 0.2s, border-bottom 0.2s;
-					padding-bottom: 3px;
-					border-bottom: 2px solid transparent;
+					transition: color 0.2s;
 				}
 
 				.nav-links a:hover {
-					color: var(--primary-dark);
-					border-bottom: 2px solid var(--primary);
+					color: #2cccc4;
 				}
 
 				.nav-links a.active {
-					color: var(--primary);
-					border-bottom: 2px solid var(--primary);
-				}
-
-				.header-right {
-					margin-left: auto;
-					margin-right: 15px
+					color: #8645a5;
+					font-weight: 600;
 				}
 
 				.header-right button {
-					background: var(--primary);
+					background-color: #fa7265;
 					color: white;
 					border: none;
-					padding: 10px 18px;
+					padding: 0.5rem 1.25rem;
 					border-radius: 6px;
 					cursor: pointer;
 					font-weight: 600;
-					transition: background 0.2s, transform 0.1s;
+					transition: background-color 0.2s;
 				}
 
 				.header-right button:hover {
-					background: var(--blue-light);
-					transform: translateY(-1px);
+					background-color: #4a8eac;
 				}
 
 				main {
+					display: flex;
+					justify-content: center;
+					width: 100%;
+					padding: 2rem 0;
+				}
+
+				main.page-content {
 					display: flex;
 					justify-content: center;
 					width: 100%;
@@ -280,6 +264,14 @@ templ Index() {
 				.bar-fill {
 					height: 100%;
 					transition: width 0.6s ease, background-color 0.6s ease;
+				}
+
+				footer {
+					text-align: center;
+					padding: 1.5rem;
+					color: #4a8eac;
+					font-size: 0.9rem;
+					margin-top: 4rem;
 				}
 			</style>
 		</head>
@@ -575,12 +567,12 @@ L7fM9K9YvS55lFRuPMr4CeqVTxMKFeWpp8zJ+dM+Ivsuaq++QwdX9XVSDiyKcZanMtcS3HZsg3Ko
 QMv+4eUffPLf8jrdm2gAAAAASUVORK5CYII=" alt="Anemone Logo" />
 					<span class="brand">Anemone</span>
 					<nav class="nav-links">
-						<a href="/" class="">Home</a>
-						<a href="/playground" class="active">Playground</a>
+						<a href="/" class="active">Home</a>
+						<a href="/playground">Playground</a>
 					</nav>
 				</div>
 				<div class="header-right">
-					<button onclick="window.location.href='/contact'">Contact</button>
+					<button onclick="window.location.href='/contact'">Talk to an expert</button>
 				</div>
 			</header>
 
@@ -611,6 +603,10 @@ QMv+4eUffPLf8jrdm2gAAAAASUVORK5CYII=" alt="Anemone Logo" />
 					<div id="result">(No result yet)</div>
 				</div>
 			</main>
+
+			<footer>
+				© 2025 Anemone — All rights reserved.
+			</footer>
 		</body>
 	</html>
 }

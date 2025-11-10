@@ -65,6 +65,12 @@ func (app *application) mount() http.Handler {
 		templates.Index().Render(r.Context(), w)
 	})
 
+	r.Get("/contact", func(w http.ResponseWriter, r *http.Request) {
+		// templates.Index().Render(r.Context(), w)
+		templates.Contact().Render(r.Context(), w)
+	})
+
+
 	r.Route("/v1", func(r chi.Router) {
 		r.Get("/health", app.healthCheckHandler)
 
